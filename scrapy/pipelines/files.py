@@ -82,6 +82,7 @@ class S3FilesStore(object):
 
     AWS_ACCESS_KEY_ID = None
     AWS_SECRET_ACCESS_KEY = None
+    AWS_ENDPOINT_URL = None
 
     POLICY = 'private'  # Overriden from settings.FILES_STORE_S3_ACL in
                         # FilesPipeline.from_settings.
@@ -96,7 +97,8 @@ class S3FilesStore(object):
             session = botocore.session.get_session()
             self.s3_client = session.create_client(
                 's3', aws_access_key_id=self.AWS_ACCESS_KEY_ID,
-                aws_secret_access_key=self.AWS_SECRET_ACCESS_KEY)
+                aws_secret_access_key=self.AWS_SECRET_ACCESS_KEY,
+                endpoint_url=self.AWS_ENDPOINT_URL)
         else:
             from boto.s3.connection import S3Connection
             self.S3Connection = S3Connection
@@ -298,6 +300,7 @@ class FilesPipeline(MediaPipeline):
         s3store = cls.STORE_SCHEMES['s3']
         s3store.AWS_ACCESS_KEY_ID = settings['AWS_ACCESS_KEY_ID']
         s3store.AWS_SECRET_ACCESS_KEY = settings['AWS_SECRET_ACCESS_KEY']
+        s3store.AWS_ENDPOINT_URL = settings['AWS_ENDPOINT_URL']
         s3store.POLICY = settings['FILES_STORE_S3_ACL']
 
         gcs_store = cls.STORE_SCHEMES['gs']
